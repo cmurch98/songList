@@ -14,7 +14,7 @@ import pandas as pd     # Import for dataframe capabilites
 def get_json(playlistID, token):
     # Define the different url sections
     spotifyRequest = '"https://api.spotify.com/v1/playlists/'
-    spotifyPresets = '/tracks?market=AU&fields=items(track.name%2C%20track.album.name)&limit=100&offset=0"'
+    spotifyPresets = '/tracks?market=AU&fields=items.track.id&limit=100&offset=0"'
     spotifyReturns = ' -H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Bearer '
     token = token + '"'
 
@@ -22,7 +22,7 @@ def get_json(playlistID, token):
     spotifyFinal = spotifyRequest + playlistID + spotifyPresets + spotifyReturns + token
 
     # Run the http callback request
-    return os.system('curl -X "GET" ' + spotifyFinal)
+    return str(os.system('curl -X "GET" ' + spotifyFinal))
 
 def handle_json(jsonReceived):
     # Take the respone of the callback request and convert it from json format
@@ -36,7 +36,7 @@ filePath = 'playlistIDs.txt'
 # Open the file containing all the playlist ID's
 idFile = open(filePath, 'r')
 # Loop through the file and save each ID separately
-IDs = idFile.readLines()
+IDs = idFile.readlines()
 # Remove the newline characters from the array of strings
 IDs = [i.replace('n', '') for i in IDs]
 # Close the file now that we're done with it
@@ -44,5 +44,6 @@ idFile.close()
 
 # TODO loop over playlist ID's and append the resulting list of track IDS to a globally stored datframe
 for i in range(0, len(IDs)):
-    jsonText = get_json(IDs[i], authToken)
-    handle_json(jsonText)
+    get_json(IDs[i], authToken)
+    #jsonText = get_json(IDs[i], authToken)
+    #handle_json(jsonText)
