@@ -21,7 +21,7 @@ def get_json(playlistID, token):
     # Concatenate the strings together
     spotifyFinal = spotifyRequest + playlistID + spotifyPresets + spotifyReturns + token
 
-    # Run the http callback request
+    # Run the http callback request as a string
     return str(os.system('curl -X "GET" ' + spotifyFinal))
 
 def handle_json(jsonReceived):
@@ -37,13 +37,14 @@ filePath = 'playlistIDs.txt'
 idFile = open(filePath, 'r')
 # Loop through the file and save each ID separately
 IDs = idFile.readlines()
-# Remove the newline characters from the array of strings
-IDs = [i.replace('n', '') for i in IDs]
 # Close the file now that we're done with it
 idFile.close()
+# Remove the newline characters from the array of strings
+IDs = [i.replace('\n', '') for i in IDs]
+
 
 # TODO loop over playlist ID's and append the resulting list of track IDS to a globally stored datframe
 for i in range(0, len(IDs)):
     get_json(IDs[i], authToken)
     #jsonText = get_json(IDs[i], authToken)
-    #handle_json(jsonText)
+    handle_json(jsonText)
