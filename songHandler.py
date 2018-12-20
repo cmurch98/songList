@@ -59,8 +59,16 @@ def get_json(playlistID, token):
     # Concatenate the strings together
     spotifyFinal = spotifyRequest + playlistID + spotifyPresets + spotifyReturns + token
 
-    # Run the http callback request as a string
-    return str(os.system('curl -X "GET" ' + spotifyFinal))
+    # Run the http callback request and save output in response.txt
+    os.system('curl -X "GET" ' + spotifyFinal + '-o response.txt')
+
+    # Open response.txt and save the files in a variable
+    responseFile = open('response.txt', 'r')
+    response = responseFile.readlines()
+    responseFile.close()
+    response = [i.replace('\n', '') for i in response]
+    return respone
+
 
 # This function handles the json input and places it in a data frame
 def handle_json(jsonReceived):
