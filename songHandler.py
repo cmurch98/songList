@@ -66,6 +66,7 @@ def get_json(playlistID, token):
     responseFile = open('response.txt', 'r')
     response = responseFile.readlines()
     responseFile.close()
+    os.remove('response.txt')
     response = [i.replace('\n', '') for i in response]
     return respone
 
