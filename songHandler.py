@@ -100,7 +100,7 @@ for i in range(0, len(IDs)):
     jsonText = get_json(IDs[i], authToken)
 
     # Save the modified response dataframe in an array for later use
-    frameArray += [handle_json(jsonText)]
+    frameArray = frameArray.append(handle_json(jsonText))
 
 # Concatenate the dataframes together to form one big dataframe with all song occurances
 trackFrame = pd.concat(frameList)
