@@ -75,7 +75,7 @@ def get_json(playlistID, token):
 # This function handles the json input and places it in a data frame
 def handle_json(jsonReceived):
     # Take the respone of the callback request and convert it from json format to a 'simple' dictionary
-    data = json.load("".join(jsonReceived))
+    data = json.loads("".join(jsonReceived))
     # Convert to a string for alteration
     data = str(data)
 
@@ -99,9 +99,9 @@ def track_sorter(dataframe):
     # Sort the 0th column for song counting
     sortedFrame = dataframe[0].value_counts()
     #for i in range(0,100):
-    print(sortedFrame)
+    topOneHundred = sortedFrame[1,0:99]
 
-    #return topOneHundred
+    return topOneHundred
 
 #--------------------------------------------------------------------
 
@@ -127,5 +127,4 @@ trackFrame = pd.concat(frameArray)
 #print(trackFrame.to_string())
 
 # Sort the songs by frequency into a new 100 x 1 dataframe
-#sortedFrame = track_sorter(trackFrame)
-track_sorter(trackFrame)
+sortedFrame = track_sorter(trackFrame)
