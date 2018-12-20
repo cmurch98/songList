@@ -43,7 +43,7 @@ def initProgram():
     # Close the file now that we're done with it
     idFile.close()
     # Remove the newline characters from the array of strings
-    identifiers = [i.replace('\n', '') for i in IDs]
+    identifiers = [i.replace('\n', '') for i in identifiers]
 
     # Return the authToken and IDs
     return token, identifiers
@@ -92,7 +92,7 @@ def handle_json(jsonReceived):
 authToken, IDs = initProgram()
 
 # Create an empty array to store the dataframes
-frameList = []
+frameArray = []
 
 # Loop through every playlist ID
 for i in range(0, len(IDs)):
@@ -100,7 +100,7 @@ for i in range(0, len(IDs)):
     jsonText = get_json(IDs[i], authToken)
 
     # Save the modified response dataframe in an array for later use
-    frameList += handle_json(jsonText)
+    frameArray += [handle_json(jsonText)]
 
 # Concatenate the dataframes together to form one big dataframe with all song occurances
 trackFrame = pd.concat(frameList)
