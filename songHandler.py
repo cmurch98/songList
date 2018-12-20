@@ -10,10 +10,10 @@
 # Relevant Web Resources
 #--------------------------------------------------------------------
 # For authorisation we need to visit this website:
-# https://accounts.spotify.com/en/authorize?response_type=token&redirect_uri=https:%2F%2Fdeveloper.spotify.com%2Fcallback&client_id=774b29d4f13844c495f206cafdad9c86&state=7hhgjh
+# https://accounts.spotify.com/en/authorize
 
 # The dashboard can be found here:
-# https://developer.spotify.com/dashboard/applications/d90119b7ca3e40d49d97dd2f45671aad
+# https://developer.spotify.com/dashboard/applications/
 #--------------------------------------------------------------------
 
 # Import relevant libraries
