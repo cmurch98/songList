@@ -99,7 +99,7 @@ def track_sorter(dataframe):
     # Sort the 0th column for song counting
     sortedFrame = dataframe[0].value_counts()
     #for i in range(0,100):
-    topOneHundred = sortedFrame[1,0:99]
+    topOneHundred = sortedFrame[0:99]
 
     return topOneHundred
 
@@ -128,3 +128,9 @@ trackFrame = pd.concat(frameArray)
 
 # Sort the songs by frequency into a new 100 x 1 dataframe
 sortedFrame = track_sorter(trackFrame)
+print(sortedFrame.to_string())
+
+# Perform the next steps
+# Identify playlist
+# Remove tracks from the playlist
+# Add new tracks to the playlist
