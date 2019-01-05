@@ -34,7 +34,6 @@ from io import StringIO # Import for string input to dataframe
 def init_program():
     # Save the input arguments in variables for easy access
     token = str(sys.argv[1])
-
     # Define the path of the playlistIDs file
     filePath = 'playlistIDs.txt'
     # Open the file containing all the playlist ID's
@@ -45,7 +44,6 @@ def init_program():
     idFile.close()
     # Remove the newline characters from the array of strings
     identifiers = [i.replace('\n', '') for i in identifiers]
-
     # Return the authToken and IDs
     return token, identifiers
 
@@ -71,7 +69,6 @@ def get_json(playlistID, token):
     response = [i.replace('\n', '') for i in response]
     return response
 
-
 # This function handles the json input and places it in a data frame
 def handle_json(jsonReceived):
     # Take the respone of the callback request and convert it from json format to a 'simple' dictionary
@@ -92,7 +89,6 @@ def handle_json(jsonReceived):
 
     # Return the data frame as a single column structure
     return subFrame
-
 
 # This function sorts the dataframe into decending order for song repeats
 def track_sorter(dataframe):
