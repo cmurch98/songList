@@ -24,7 +24,7 @@ import numpy as np      # Import for sorting
 import pandas as pd     # Import for dataframe capabilites
 from io import StringIO  # Import for string input to dataframe
 # --------------------------------------------------------------------
-NUMOFSONGS = 100
+NUMOFSONGS = 40
 
 # Function Definitions
 # --------------------------------------------------------------------
@@ -105,10 +105,10 @@ def track_sorter(dataframe):
 # This function adds the
 def track_adder(songs, DESTINATIONPLAYLIST, token):
     # Define the different url sections
-    spotifyRequest = 'curl -X "POST" "https://api.spotify.com/v1/playlists/3fl8hxhrqkEx0iVFHblxsr/tracks?position=0&uris='
-
+    spotifyRequest1 = 'curl -X "POST" "https://api.spotify.com/v1/playlists/3fl8hxhrqkEx0iVFHblxsr/tracks?position=0&uris='
+    spotifyRequest2 = 
     # Loop through each track ID
-    for i in range(0, NUMOFSONGS):
+    for i in range(0, NUMOFSONGS/2):
         # Concatenate each track uri to the request string
         spotifyRequest += 'spotify%3Atrack%3A' + songs[i]
         if i != (NUMOFSONGS-1):
@@ -123,15 +123,14 @@ def track_adder(songs, DESTINATIONPLAYLIST, token):
     # Add the token with public and private playlist requests
     spotifyRequest += ' ' + token + '"'
 
-    print(spotifyRequest)
     # Call the curl request
-    os.system(spotifyRequest)
+    os.system(spotifyRequest1)
 
 # --------------------------------------------------------------------
 # The main program begins here
 # --------------------------------------------------------------------
 # This is the playlist ID for the 'output playlist'
-OUTPUTPLAYLIST = '3fl8hxhrqkEx0iVFHblxsr'
+OUTPUTPLAYLIST = '6NqAZvfAs36JBO3YAvUCyw'
 
 # Save the input argument and obtain the playlist IDs
 authToken, IDs = init_program()
