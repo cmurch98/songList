@@ -1,35 +1,31 @@
 # Readme
-#--------------------------------------------------------------------
+# --------------------------------------------------------------------
 # songHandler.py is a python program to be run on a linux os which
 # takes Spotify Playlist ID's (max length = 100 playlists) and sorts
 # the top 100 songs from this list into a new playlist. When called,
 # this program requires an 'access token' argument which can be
 # obtained from one of the websites listed below. Enjoy
 #                                       - Christian Murchie 20/12/18
-
+# --------------------------------------------------------------------
 # Relevant Web Resources
-#--------------------------------------------------------------------
+# --------------------------------------------------------------------
 # For authorisation we need to visit this website:
 # https://accounts.spotify.com/en/authorize
-
 # The dashboard can be found here:
 # https://developer.spotify.com/dashboard/applications/
-#--------------------------------------------------------------------
-
+# --------------------------------------------------------------------
 # Import relevant libraries
-#--------------------------------------------------------------------
+# --------------------------------------------------------------------
 import os               # Import for curl access
 import re               # Import for string substitutions
 import sys              # Import for argument access
 import json             # Import for json handling
 import numpy as np      # Import for sorting
 import pandas as pd     # Import for dataframe capabilites
-from io import StringIO # Import for string input to dataframe
-#--------------------------------------------------------------------
-
+from io import StringIO  # Import for string input to dataframe
+# --------------------------------------------------------------------
 # Function Definitions
-#--------------------------------------------------------------------
-
+# --------------------------------------------------------------------
 # This function handles the input argument and saves the required IDs
 def init_program():
     # Save the input arguments in variables for easy access
@@ -56,7 +52,8 @@ def get_json(playlistID, token):
     token = token + '"'
 
     # Concatenate the strings together
-    spotifyFinal = spotifyRequest + playlistID + spotifyPresets + spotifyReturns + token
+    spotifyFinal = spotifyRequest + playlistID + \
+        spotifyPresets + spotifyReturns + token
 
     # Run the http callback request and save output in response.txt
     os.system('curl -X "GET" ' + spotifyFinal + ' -o response.txt')
@@ -64,9 +61,13 @@ def get_json(playlistID, token):
     # Open response.txt and save the files in a variable
     responseFile = open('response.txt', 'r')
     response = responseFile.readlines()
+    # Close the file to save memory
     responseFile.close()
+    # Delete the file for iterative measures
     os.remove('response.txt')
+    # Remove the newline characters from the array of strings
     response = [i.replace('\n', '') for i in response]
+
     return response
 
 # This function handles the json input and places it in a data frame
@@ -94,15 +95,40 @@ def handle_json(jsonReceived):
 def track_sorter(dataframe):
     # Sort the 0th column for song counting
     sortedFrame = dataframe[0].value_counts()
-    #for i in range(0,100):
+    # for i in range(0,100):
     topOneHundred = sortedFrame[0:99]
 
     return topOneHundred
 
-#--------------------------------------------------------------------
+# This function adds the
+def track_adder(songs, DESTINATIONPLAYLIST, token):
+    # Define the different url sections
+    spotifyRequest = 'curl -X "POST" "https://api.spotify.com/v1/playlists/3fl8hxhrqkEx0iVFHblxsr/tracks?position=0&uris='
 
+    # Loop through each track ID
+    for i in range(0, 100):
+        # Concatenate each track uri to the request string
+        spotifyRequest += 'spotify\%3Atrack\%3' + songs[i]
+        if i != 99:
+            # If it's not the last track add a comma
+            spotifyRequest += '\%2'
+        else:
+            # On the last track, close the string
+            spotifyRequest += '"'
+
+    # Add on further request requirements
+    spotifyRequest += ' -H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Bearer'
+    # Add the token with public and private playlist requests
+    spotifyRequest += token + '"'
+
+    # Call the curl request
+    os.system(spotifyRequest)
+
+# --------------------------------------------------------------------
 # The main program begins here
-#--------------------------------------------------------------------
+# --------------------------------------------------------------------
+# This is the playlist ID for the 'output playlist'
+OUTPUTPLAYLIST = '3fl8hxhrqkEx0iVFHblxsr'
 
 # Save the input argument and obtain the playlist IDs
 authToken, IDs = init_program()
@@ -120,11 +146,16 @@ for i in range(0, len(IDs)):
 
 # Concatenate the dataframes together to form one big dataframe with all song occurances
 trackFrame = pd.concat(frameArray)
-#print(trackFrame.to_string())
+# print(trackFrame.to_string())
 
 # Sort the songs by frequency into a new 100 x 1 dataframe
 sortedFrame = track_sorter(trackFrame)
+sortedFrame = sortedFrame.transpose()
 print(sortedFrame.to_string())
+
+# Adds the songs to the selected playlist, change or clear the playlist every run
+#track_adder(sortedFrame, OUTPUTPLAYLIST, authToken)
+
 
 # Perform the next steps
 # Identify playlist
