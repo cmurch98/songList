@@ -105,26 +105,45 @@ def track_sorter(dataframe):
 # This function adds the
 def track_adder(songs, DESTINATIONPLAYLIST, token):
     # Define the different url sections
-    spotifyRequest1 = 'curl -X "POST" "https://api.spotify.com/v1/playlists/3fl8hxhrqkEx0iVFHblxsr/tracks?position=0&uris='
-    spotifyRequest2 = 
+    spotifyInit = 'curl -X "POST" "https://api.spotify.com/v1/playlists/3fl8hxhrqkEx0iVFHblxsr/tracks?position=0&uris='
+    spotifyRequest1 = spotifyInit
+    spotifyRequest2 = spotifyInit
+
     # Loop through each track ID
     for i in range(0, NUMOFSONGS/2):
         # Concatenate each track uri to the request string
-        spotifyRequest += 'spotify%3Atrack%3A' + songs[i]
-        if i != (NUMOFSONGS-1):
+        spotifyRequest1 += 'spotify%3Atrack%3A' + songs[i]
+        if i != (NUMOFSONGS/2 - 1):
             # If it's not the last track add a comma
-            spotifyRequest += '%2C'
+            spotifyRequest1 += '%2C'
         else:
             # On the last track, close the string
-            spotifyRequest += '"'
+            spotifyRequest1 += '"'
+
+    # Loop through each track ID
+    for i in range(NUMOFSONGS + 1, NUMOFSONGS):
+        # Concatenate each track uri to the request string
+        spotifyRequest2 += 'spotify%3Atrack%3A' + songs[i]
+        if i != (NUMOFSONGS - 1):
+            # If it's not the last track add a comma
+            spotifyRequest2 += '%2C'
+        else:
+            # On the last track, close the string
+            spotifyRequest2 += '"'
 
     # Add on further request requirements
-    spotifyRequest += ' -H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Bearer'
+    spotifyContext = ' -H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Bearer'
+    spotifyRequest1 += spotifyContext
+    spotifyRequest2 += spotifyContext
+
     # Add the token with public and private playlist requests
-    spotifyRequest += ' ' + token + '"'
+    spotifyToken = ' ' + token + '"'
+    spotifyRequest1 += spotifyToken
+    spotifyRequest2 += spotifyToken
 
     # Call the curl request
     os.system(spotifyRequest1)
+    os.system(spotifyRequest2)
 
 # --------------------------------------------------------------------
 # The main program begins here
@@ -160,9 +179,3 @@ print(len(sortedFrame))
 
 # Adds the songs to the selected playlist, change or clear the playlist every run
 track_adder(sortedFrame, OUTPUTPLAYLIST, authToken)
-
-
-# Perform the next steps
-# Identify playlist
-# Remove tracks from the playlist
-# Add new tracks to the playlist
