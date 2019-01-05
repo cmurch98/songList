@@ -24,6 +24,8 @@ import numpy as np      # Import for sorting
 import pandas as pd     # Import for dataframe capabilites
 from io import StringIO  # Import for string input to dataframe
 # --------------------------------------------------------------------
+NUMOFSONGS = 100
+
 # Function Definitions
 # --------------------------------------------------------------------
 # This function handles the input argument and saves the required IDs
@@ -96,7 +98,7 @@ def track_sorter(dataframe):
     # Sort the 0th column for song counting
     sortedFrame = dataframe[0].value_counts()
     # for i in range(0,100):
-    topOneHundred = sortedFrame[0:99]
+    topOneHundred = sortedFrame[0:NUMOFSONGS]
 
     return topOneHundred
 
@@ -106,12 +108,12 @@ def track_adder(songs, DESTINATIONPLAYLIST, token):
     spotifyRequest = 'curl -X "POST" "https://api.spotify.com/v1/playlists/3fl8hxhrqkEx0iVFHblxsr/tracks?position=0&uris='
 
     # Loop through each track ID
-    for i in range(0, 100):
+    for i in range(0, NUMOFSONGS):
         # Concatenate each track uri to the request string
-        spotifyRequest += 'spotify\%3Atrack\%3' + songs[i]
-        if i != 99:
+        spotifyRequest += 'spotify%3Atrack%3A' + songs[i]
+        if i != (NUMOFSONGS-1):
             # If it's not the last track add a comma
-            spotifyRequest += '\%2'
+            spotifyRequest += '%2C'
         else:
             # On the last track, close the string
             spotifyRequest += '"'
@@ -119,8 +121,9 @@ def track_adder(songs, DESTINATIONPLAYLIST, token):
     # Add on further request requirements
     spotifyRequest += ' -H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Bearer'
     # Add the token with public and private playlist requests
-    spotifyRequest += token + '"'
+    spotifyRequest += ' ' + token + '"'
 
+    print(spotifyRequest)
     # Call the curl request
     os.system(spotifyRequest)
 
@@ -149,12 +152,15 @@ trackFrame = pd.concat(frameArray)
 # print(trackFrame.to_string())
 
 # Sort the songs by frequency into a new 100 x 1 dataframe
-sortedFrame = track_sorter(trackFrame)
-sortedFrame = sortedFrame.transpose()
-print(sortedFrame.to_string())
+sortedFrame = track_sorter(trackFrame).to_string()
+sortedFrame = "".join(sortedFrame)
+sortedFrame = re.sub('    \w{1}', '', sortedFrame)
+sortedFrame = sortedFrame.split('\n')
+print(sortedFrame)
+print(len(sortedFrame))
 
 # Adds the songs to the selected playlist, change or clear the playlist every run
-#track_adder(sortedFrame, OUTPUTPLAYLIST, authToken)
+track_adder(sortedFrame, OUTPUTPLAYLIST, authToken)
 
 
 # Perform the next steps
