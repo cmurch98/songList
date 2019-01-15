@@ -24,8 +24,6 @@ import numpy as np      # Import for sorting
 import pandas as pd     # Import for dataframe capabilites
 from io import StringIO  # Import for string input to dataframe
 # --------------------------------------------------------------------
-NUMOFSONGS = 40
-
 # Function Definitions
 # --------------------------------------------------------------------
 # This function handles the input argument and saves the required IDs
@@ -98,22 +96,23 @@ def track_sorter(dataframe):
     # Sort the 0th column for song counting
     sortedFrame = dataframe[0].value_counts()
     # for i in range(0,100):
-    topOneHundred = sortedFrame[0:NUMOFSONGS]
+    topOneHundred = sortedFrame[0:100]
 
     return topOneHundred
 
 # This function adds the
 def track_adder(songs, DESTINATIONPLAYLIST, token):
     # Define the different url sections
-    spotifyInit = 'curl -X "POST" "https://api.spotify.com/v1/playlists/3fl8hxhrqkEx0iVFHblxsr/tracks?position=0&uris='
-    spotifyRequest1 = spotifyInit
-    spotifyRequest2 = spotifyInit
+    spotifyInit = 'curl -X "POST" "https://api.spotify.com/v1/playlists/'
+    spotifyPostInit = '/tracks?position=0&uris='
+    spotifyRequest1 = spotifyInit + DESTINATIONPLAYLIST + spotifyPostInit
+    spotifyRequest2 = spotifyInit + DESTINATIONPLAYLIST + spotifyPostInit
 
     # Loop through each track ID
-    for i in range(0, NUMOFSONGS/2):
+    for i in range(0, 50):
         # Concatenate each track uri to the request string
         spotifyRequest1 += 'spotify%3Atrack%3A' + songs[i]
-        if i != (NUMOFSONGS/2 - 1):
+        if i != 49:
             # If it's not the last track add a comma
             spotifyRequest1 += '%2C'
         else:
@@ -121,10 +120,10 @@ def track_adder(songs, DESTINATIONPLAYLIST, token):
             spotifyRequest1 += '"'
 
     # Loop through each track ID
-    for i in range(NUMOFSONGS + 1, NUMOFSONGS):
+    for i in range(51, 100):
         # Concatenate each track uri to the request string
         spotifyRequest2 += 'spotify%3Atrack%3A' + songs[i]
-        if i != (NUMOFSONGS - 1):
+        if i != 99:
             # If it's not the last track add a comma
             spotifyRequest2 += '%2C'
         else:
@@ -142,7 +141,9 @@ def track_adder(songs, DESTINATIONPLAYLIST, token):
     spotifyRequest2 += spotifyToken
 
     # Call the curl request
+    print(spotifyRequest1)
     os.system(spotifyRequest1)
+    print(spotifyRequest2)
     os.system(spotifyRequest2)
 
 # --------------------------------------------------------------------
@@ -174,8 +175,6 @@ sortedFrame = track_sorter(trackFrame).to_string()
 sortedFrame = "".join(sortedFrame)
 sortedFrame = re.sub('    \w{1}', '', sortedFrame)
 sortedFrame = sortedFrame.split('\n')
-print(sortedFrame)
-print(len(sortedFrame))
 
 # Adds the songs to the selected playlist, change or clear the playlist every run
 track_adder(sortedFrame, OUTPUTPLAYLIST, authToken)
